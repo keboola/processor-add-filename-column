@@ -46,7 +46,7 @@ Default parameters:
 ```
 {  
     "definition": {
-        "component": "keboola.processor.add-filename-column"
+        "component": "keboola.processor-add-filename-column"
     }
 }
 ```
@@ -56,7 +56,7 @@ Add column name header:
 ```
 {
     "definition": {
-        "component": "keboola.processor.add-filename-column"
+        "component": "keboola.processor-add-filename-column"
     },
     "parameters": {
     	"column_name": "filename"
@@ -70,7 +70,7 @@ Use tab as delimiter and single quote as enclosure:
 ```
 {
     "definition": {
-        "component": "keboola.processor.add-filename-column"
+        "component": "keboola.processor-add-filename-column"
     },
     "parameters": {
     	"delimiter": "\t",
