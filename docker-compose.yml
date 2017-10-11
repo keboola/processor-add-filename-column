@@ -1,0 +1,14 @@
+version: '2'
+services:
+  dev:
+    build: .
+    image: keboola/processor-add-filename-column
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/code
+
+  processor-add-filename-column:
+    image: keboola/processor-add-filename-column
+    tty: true
+    stdin_open: true
