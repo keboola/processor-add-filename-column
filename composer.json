@@ -1,9 +1,13 @@
 {
-    "name": "keboola/processor-headers",
+    "name": "keboola/processor-add-filename-to-column",
     "license": "MIT",
     "type": "project",	
     "require": {
         "keboola/csv": "^1.1",
-        "PHP": "^7.1"
+        "PHP": "^7.1",
+        "symfony/filesystem": "^3.3",
+        "symfony/finder": "^3.3",
+        "keboola/php-temp": "^0.1",
+        "symfony/process": "^3.3"
     }
 }
