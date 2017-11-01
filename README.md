@@ -42,7 +42,7 @@ It supports optional parameters:
 All CSV files must
 
 - not have headers
-- have a manifest file attached with `columns`, `delimiter` and `enclosure` properties
+- have a manifest file with `columns`, `delimiter` and `enclosure` properties
 
 ## Sample configurations
 

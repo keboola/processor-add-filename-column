@@ -5,6 +5,8 @@ $testFolder = __DIR__;
 
 $finder = new \Symfony\Component\Finder\Finder();
 $finder->directories()->sortByName()->in($testFolder)->depth(0);
+$fs = new \Symfony\Component\Filesystem\Filesystem();
+
 foreach ($finder as $testSuite) {
     print "Test " . $testSuite->getPathName() . "\n";
     $temp = new \Keboola\Temp\Temp("processor-add-filename-column");
@@ -13,11 +15,11 @@ foreach ($finder as $testSuite) {
     $copyCommand = "cp -R " . $testSuite->getPathName() . "/source/data/* " . $temp->getTmpFolder();
     (new \Symfony\Component\Process\Process($copyCommand))->mustRun();
 
-    mkdir($temp->getTmpFolder() . "/out/tables", 0777, true);
-    mkdir($temp->getTmpFolder() . "/out/files", 0777, true);
+    $fs->mkdir($temp->getTmpFolder() . "/out/tables", 0777);
+    $fs->mkdir($temp->getTmpFolder() . "/out/files", 0777);
 
     $setEnv = '';
-    if (file_exists($testSuite->getPathName() . "/source/env.ini")) {
+    if ($fs->exists($testSuite->getPathName() . "/source/env.ini")) {
         $envs = parse_ini_file($testSuite->getPathName() . "/source/env.ini");
         if ($envs) {
             foreach ($envs as $env => $value) {
@@ -26,10 +28,33 @@ foreach ($finder as $testSuite) {
         }
     }
 
-
     $runCommand = "{$setEnv} php /code/main.php --data=" . $temp->getTmpFolder();
     $runProcess = new \Symfony\Component\Process\Process($runCommand);
-    $runProcess->mustRun();
+    $runProcess->run();
+
+    // detect errors
+    if ($runProcess->getExitCode() > 0) {
+        if (!$fs->exists($testSuite->getPathName() . "/expected")) {
+            print "Failed as expected ({$runProcess->getExitCode()}): ";
+            if ($runProcess->getOutput()) {
+                print $runProcess->getOutput() . "\n";
+            }
+            if ($runProcess->getErrorOutput()) {
+                print $runProcess->getErrorOutput() . "\n";
+            }
+
+        } else {
+            print "Unexpectedly failed.\n";
+            if ($runProcess->getOutput()) {
+                print "\n" . $runProcess->getOutput() . "\n";
+            }
+            if ($runProcess->getErrorOutput()) {
+                print "\n" . $runProcess->getErrorOutput() . "\n";
+            }
+            exit(1);
+        }
+        continue;
+    }
 
     if ($runProcess->getOutput()) {
         print "\n" . $runProcess->getOutput() . "\n";
