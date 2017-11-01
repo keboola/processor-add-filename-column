@@ -16,15 +16,26 @@ foreach ($finder as $testSuite) {
     mkdir($temp->getTmpFolder() . "/out/tables", 0777, true);
     mkdir($temp->getTmpFolder() . "/out/files", 0777, true);
 
-    $runCommand = "php /code/main.php --data=" . $temp->getTmpFolder();
+    $setEnv = '';
+    if (file_exists($testSuite->getPathName() . "/source/env.ini")) {
+        $envs = parse_ini_file($testSuite->getPathName() . "/source/env.ini");
+        if ($envs) {
+            foreach ($envs as $env => $value) {
+                $setEnv .= "export {$env}=\"" . str_replace('"', '\"', $value) . "\" && ";
+            }
+        }
+    }
+
+    $runCommand = "{$setEnv} php /code/main.php --data=" . $temp->getTmpFolder();
     $runProcess = new \Symfony\Component\Process\Process($runCommand);
     $runProcess->mustRun();
 
     $diffCommand = "diff --exclude=.gitkeep --ignore-all-space --recursive " . $testSuite->getPathName() . "/expected/data/out " . $temp->getTmpFolder() . "/out";
     $diffProcess = new \Symfony\Component\Process\Process($diffCommand);
-    $diffProcess->run();
+    $diffProcess->mustRun();
     if ($diffProcess->getExitCode() > 0) {
         print "\n" . $diffProcess->getOutput() . "\n";
+        print "\n" . $diffProcess->getErrorOutput() . "\n";
         exit(1);
     }
 }

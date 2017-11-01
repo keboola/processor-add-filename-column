@@ -30,14 +30,20 @@ function processFile(SplFileInfo $sourceFile, $destinationFolder, $delimiter, $e
     }
 }
 
+$arguments = getopt("", ["data:"]);
+if (!isset($arguments["data"])) {
+    $dataDir = "/data";
+} else {
+    $dataDir = $arguments["data"];
+}
+
 try {
-    $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : getenv('KBC_DATADIR');
     $delimiter = getenv('KBC_PARAMETER_DELIMITER') === false ? ',' : getenv('KBC_PARAMETER_DELIMITER');
     $enclosure = getenv('KBC_PARAMETER_ENCLOSURE') === false ? '"' : getenv('KBC_PARAMETER_ENCLOSURE');
     $escapedBy = getenv('KBC_PARAMETER_ESCAPED_BY') === false ? '' : getenv('KBC_PARAMETER_ESCAPED_BY');
     $columnName = getenv('KBC_PARAMETER_COLUMN_NAME') === false ? '' : getenv('KBC_PARAMETER_COLUMN_NAME');
-    $files = new FilesystemIterator($dataDir . 'in/tables/', FilesystemIterator::SKIP_DOTS);
-    $destination = $dataDir . 'out/tables/';
+    $files = new FilesystemIterator($dataDir . '/in/tables/', FilesystemIterator::SKIP_DOTS);
+    $destination = $dataDir . '/out/tables/';
     /** @var FilesystemIterator $file */
     foreach ($files as $file) {
         if ($file->getExtension() == 'manifest') {
