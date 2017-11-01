@@ -7,7 +7,6 @@ require('vendor/autoload.php');
  * @param $destinationFolder
  * @param $delimiter
  * @param $enclosure
- * @param $columnName
  */
 function processFile(SplFileInfo $sourceFile, $destinationFolder, $delimiter, $enclosure)
 {
