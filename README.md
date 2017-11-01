@@ -34,10 +34,23 @@ Run the test suite using this command:
 # Usage
 It supports optional parameters:
 
-- `column_name ` -- Name of the column. The first row of each CSV file is the header.
+- `column_name ` -- Name of the column
 - `delimiter` -- CSV delimiter, defaults to `,`
 - `enclosure` -- CSV enclosure, defaults to `"`
 - `escaped_by` -- escape character for the enclosure, defaults to empty
+
+## CSV headers, `column_name` option and sliced files
+
+The `column_name` option will **update the CSV header** only if
+
+- it is not a sliced file and 
+- does not have a manifest or has a manifest which does not specify the `columns` property
+
+It will **update the manifest file** only if there already is a manifest file containing the `columns` property.
+  
+In all other cases the manifest file and CSV headers will remain untouched and only the values will be added.
+
+If the `column_name` option is not specified, the manifest or CSV header will not be modified.
 
 ## Sample configurations
 
