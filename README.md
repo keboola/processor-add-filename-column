@@ -21,7 +21,7 @@ Supports optional parameters:
 - `column_name ` -- Name of the column, defaults to `filename`
 
 
-## Sample configurations
+### Sample configurations
 
 Default parameters
 
