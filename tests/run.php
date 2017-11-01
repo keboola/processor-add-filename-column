@@ -7,7 +7,7 @@ $finder = new \Symfony\Component\Finder\Finder();
 $finder->directories()->sortByName()->in($testFolder)->depth(0);
 foreach ($finder as $testSuite) {
     print "Test " . $testSuite->getPathName() . "\n";
-    $temp = new \Keboola\Temp\Temp("processor-create-manifest");
+    $temp = new \Keboola\Temp\Temp("processor-add-filename-column");
     $temp->initRunFolder();
 
     $copyCommand = "cp -R " . $testSuite->getPathName() . "/source/data/* " . $temp->getTmpFolder();
@@ -26,16 +26,25 @@ foreach ($finder as $testSuite) {
         }
     }
 
+
     $runCommand = "{$setEnv} php /code/main.php --data=" . $temp->getTmpFolder();
     $runProcess = new \Symfony\Component\Process\Process($runCommand);
     $runProcess->mustRun();
 
+    if ($runProcess->getOutput()) {
+        print "\n" . $runProcess->getOutput() . "\n";
+    }
+
     $diffCommand = "diff --exclude=.gitkeep --ignore-all-space --recursive " . $testSuite->getPathName() . "/expected/data/out " . $temp->getTmpFolder() . "/out";
     $diffProcess = new \Symfony\Component\Process\Process($diffCommand);
-    $diffProcess->mustRun();
+    $diffProcess->run();
     if ($diffProcess->getExitCode() > 0) {
-        print "\n" . $diffProcess->getOutput() . "\n";
-        print "\n" . $diffProcess->getErrorOutput() . "\n";
+        if ($diffProcess->getOutput()) {
+            print "\n" . $diffProcess->getOutput() . "\n";
+        }
+        if ($diffProcess->getErrorOutput()) {
+            print "\n" . $diffProcess->getErrorOutput() . "\n";
+        }
         exit(1);
     }
 }
