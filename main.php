@@ -25,14 +25,29 @@ if (!isset($arguments["data"])) {
 } else {
     $dataDir = $arguments["data"];
 }
+
 $destination = $dataDir . '/out/tables/';
+$configFile = $dataDir . "/config.json";
+
+if (!file_exists($configFile)) {
+    echo "Config file not found";
+    exit(2);
+}
 
 try {
-    $columnName = getenv('KBC_PARAMETER_COLUMN_NAME') === false ? 'filename' : getenv('KBC_PARAMETER_COLUMN_NAME');
-
     $fs = new \Symfony\Component\Filesystem\Filesystem();
     $jsonDecode = new \Symfony\Component\Serializer\Encoder\JsonDecode(true);
     $jsonEncode = new \Symfony\Component\Serializer\Encoder\JsonEncode();
+
+    $config = $jsonDecode->decode(
+        file_get_contents($configFile),
+        \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT
+    );
+
+    $parameters = (new \Symfony\Component\Config\Definition\Processor())->processConfiguration(
+        new \Keboola\Processor\AddFilenameColumn\ConfigDefinition(),
+        [isset($config["parameters"]) ? $config["parameters"] : []]
+    );
 
     $finder = new \Symfony\Component\Finder\Finder();
     $finder->notName("*.manifest")->in($dataDir . "/in/tables")->depth(0);
@@ -66,7 +81,7 @@ try {
             );
         }
 
-        $manifest["columns"][] = $columnName;
+        $manifest["columns"][] = $parameters["column_name"];
         $targetManifest = $destination . $file->getFilename() . ".manifest";
         file_put_contents(
             $targetManifest,
@@ -94,6 +109,9 @@ try {
     }
 } catch (\Keboola\Processor\AddFilenameColumn\Exception $e) {
     echo $e->getMessage();
+    exit(1);
+} catch (\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException $e) {
+    echo "Invalid configuration: " . $e->getMessage();
     exit(1);
 } catch (\Keboola\Csv\InvalidArgumentException $e) {
     echo $e->getMessage();

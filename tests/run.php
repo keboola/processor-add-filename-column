@@ -42,7 +42,6 @@ foreach ($finder as $testSuite) {
             if ($runProcess->getErrorOutput()) {
                 print $runProcess->getErrorOutput() . "\n";
             }
-
         } else {
             print "Unexpectedly failed.\n";
             if ($runProcess->getOutput()) {
