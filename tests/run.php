@@ -18,17 +18,7 @@ foreach ($finder as $testSuite) {
     $fs->mkdir($temp->getTmpFolder() . "/out/tables", 0777);
     $fs->mkdir($temp->getTmpFolder() . "/out/files", 0777);
 
-    $setEnv = '';
-    if ($fs->exists($testSuite->getPathname() . "/source/env.ini")) {
-        $envs = parse_ini_file($testSuite->getPathname() . "/source/env.ini");
-        if ($envs) {
-            foreach ($envs as $env => $value) {
-                $setEnv .= "export {$env}=\"" . str_replace('"', '\"', $value) . "\" && ";
-            }
-        }
-    }
-
-    $runCommand = "{$setEnv} php /code/main.php --data=" . $temp->getTmpFolder();
+    $runCommand = "export KBC_DATADIR=\"{$temp->getTmpFolder()}\" && php /code/main.php --data=" . $temp->getTmpFolder();
     $runProcess = new \Symfony\Component\Process\Process($runCommand);
     $runProcess->run();
 
