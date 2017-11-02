@@ -2,12 +2,7 @@
 
 require('vendor/autoload.php');
 
-$arguments = getopt("", ["data:"]);
-if (!isset($arguments["data"])) {
-    $dataDir = "/data";
-} else {
-    $dataDir = $arguments["data"];
-}
+$dataDir = getenv('KBC_DATADIR') === false ? '/data/' : getenv('KBC_DATADIR');
 
 $destination = $dataDir . '/out/tables/';
 $configFile = $dataDir . "/config.json";
