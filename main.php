@@ -2,23 +2,6 @@
 
 require('vendor/autoload.php');
 
-/**
- * @param SplFileInfo $sourceFile
- * @param $destinationFolder
- * @param $delimiter
- * @param $enclosure
- */
-function processFile(SplFileInfo $sourceFile, $destinationFolder, $delimiter, $enclosure)
-{
-    $sourceCsv = new \Keboola\Csv\CsvFile($sourceFile->getPathname(), $delimiter, $enclosure);
-    $destinationCsv = new \Keboola\Csv\CsvFile($destinationFolder . $sourceFile->getFilename(), $delimiter, $enclosure);
-    $fileName = $sourceFile->getFilename();
-    foreach ($sourceCsv as $index => $row) {
-        $row[] = $fileName;
-        $destinationCsv->writeRow($row);
-    }
-}
-
 $arguments = getopt("", ["data:"]);
 if (!isset($arguments["data"])) {
     $dataDir = "/data";
@@ -96,7 +79,7 @@ try {
                 $fs->mkdir($slicedDestination);
             }
             foreach ($slicedFiles as $slicedFile) {
-                processFile(
+                \Keboola\Processor\AddFilenameColumn\processFile(
                     $slicedFile,
                     $slicedDestination,
                     $manifest["delimiter"],
@@ -104,7 +87,7 @@ try {
                 );
             }
         } else {
-            processFile($file, $destination, $manifest["delimiter"], $manifest["enclosure"]);
+            \Keboola\Processor\AddFilenameColumn\processFile($file, $destination, $manifest["delimiter"], $manifest["enclosure"]);
         }
     }
 } catch (\Keboola\Processor\AddFilenameColumn\Exception $e) {
