@@ -22,5 +22,25 @@
             "Keboola\\Processor\\AddFilenameColumn\\": "src/"
         },
         "files": ["src/processFile.php"]
+    },
+    "scripts": {
+        "tests": "php /code/tests/run.php",
+        "phpstan": "phpstan analyse --level=max ./src ./tests ./main.php",
+        "phpcs": "phpcs --standard=psr2 --ignore=vendor -n .",
+        "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
+        "build": [
+            "@phpcs",
+            "@phpstan",
+            "@tests"
+        ],
+        "ci": [
+            "@composer validate --no-check-publish --no-check-all",
+            "@build"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "ocramius/package-versions": true
+        }
     }
 }
