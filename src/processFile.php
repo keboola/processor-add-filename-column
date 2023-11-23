@@ -13,6 +13,7 @@ function processFile(\SplFileInfo $sourceFile, $destinationFolder, $delimiter, $
 {
     $sourceCsv = new CsvFile($sourceFile->getPathname(), $delimiter, $enclosure);
     $destinationCsv = new CsvFile($destinationFolder . $sourceFile->getFilename(), $delimiter, $enclosure);
+    $destinationCsv->openFile('w+');
     $fileName = $sourceFile->getFilename();
     foreach ($sourceCsv as $index => $row) {
         $row[] = $fileName;
