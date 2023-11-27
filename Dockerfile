@@ -12,6 +12,7 @@ COPY docker/composer-install.sh /tmp/composer-install.sh
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	    git \
+        libzip-dev \
         zlib1g-dev \
 	&& rm -r /var/lib/apt/lists/* \
 	&& docker-php-ext-install -j$(nproc) zip \

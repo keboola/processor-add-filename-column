@@ -6,6 +6,7 @@ services:
     stdin_open: true
     volumes:
       - .:/code
+      - ./data:/data
 
   processor-add-filename-column:
     build: .

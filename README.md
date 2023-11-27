@@ -1,7 +1,5 @@
 # processor-add-filename-column
 
-[![Build Status](https://travis-ci.org/keboola/processor-add-filename-column.svg?branch=master)](https://travis-ci.org/keboola/processor-add-filename-column)
-
 Takes all tables in `/data/in/tables` and appends a column with the filename (column name optional) and stores the files to `/data/out/tables`. 
 
  - Does not ignores directory structure (for sliced files).
