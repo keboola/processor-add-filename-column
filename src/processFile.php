@@ -1,7 +1,8 @@
 <?php
 namespace Keboola\Processor\AddFilenameColumn;
 
-use Keboola\Csv\CsvFile;
+use Keboola\Csv\CsvReader;
+use Keboola\Csv\CsvWriter;
 
 /**
  * @param \SplFileInfo $sourceFile
@@ -11,11 +12,10 @@ use Keboola\Csv\CsvFile;
  */
 function processFile(\SplFileInfo $sourceFile, $destinationFolder, $delimiter, $enclosure)
 {
-    $sourceCsv = new CsvFile($sourceFile->getPathname(), $delimiter, $enclosure);
-    $destinationCsv = new CsvFile($destinationFolder . $sourceFile->getFilename(), $delimiter, $enclosure);
-    $destinationCsv->openFile('w+');
+    $sourceCsv = new CsvReader($sourceFile->getPathname(), $delimiter, $enclosure);
+    $destinationCsv = new CsvWriter($destinationFolder . $sourceFile->getFilename(), $delimiter, $enclosure);
     $fileName = $sourceFile->getFilename();
-    foreach ($sourceCsv as $index => $row) {
+    foreach ($sourceCsv as $row) {
         $row[] = $fileName;
         $destinationCsv->writeRow($row);
     }

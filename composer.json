@@ -3,7 +3,7 @@
     "license": "MIT",
     "type": "project",	
     "require": {
-        "keboola/csv": "^1.1",
+        "keboola/csv": "^3.4",
         "PHP": "^7.1",
         "symfony/filesystem": "^3.3",
         "symfony/finder": "^3.3",
@@ -25,7 +25,7 @@
     },
     "scripts": {
         "tests": "php /code/tests/run.php",
-        "phpstan": "phpstan analyse --level=max ./src ./tests ./main.php",
+        "phpstan": "phpstan analyse ./src ./tests ./main.php --level=2 --no-progress -c phpstan.neon",
         "phpcs": "phpcs --standard=psr2 --ignore=vendor -n .",
         "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
         "build": [

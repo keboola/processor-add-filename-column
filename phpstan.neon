@@ -1,0 +1,4 @@
+parameters:
+    checkMissingIterableValueType: false
+    ignoreErrors:
+        - '#A trailing comma is not allowed here on line 96#'
