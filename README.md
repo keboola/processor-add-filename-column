@@ -70,3 +70,7 @@ docker-compose run tests
    - publish image to ECR if release is tagged
 
 
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
